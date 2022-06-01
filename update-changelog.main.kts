@@ -10,12 +10,12 @@ val prDetails = getPRDetails()
 val isRelease = isReleaseBuild()
 
 fun getPRDetails(): PRDetails {
-    val message = "github.event.head_commit.message".runCommand()
-    val prNumber = "github.event.number".runCommand()
+    val message = "git log -1 --pretty=%B".runCommand()
+    val commitSha = "git log --pretty=format:'%h' -1".runCommand()
 
-    println("message: $message, prNumber: $prNumber")
+    println("message: $message, sha: $commitSha")
 
-    return PRDetails(message = message, number = prNumber)
+    return PRDetails(message = message, sha = commitSha)
 }
 
 fun isReleaseBuild(): Boolean {
@@ -56,5 +56,5 @@ fun String.runCommand(dir: File? = null): String {
 
 data class PRDetails(
     val message: String,
-    val number: String
+    val sha: String
 )
