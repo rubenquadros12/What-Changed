@@ -18,10 +18,11 @@ jobs:
   test-job:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Make it executable
-      run: chmod +x update-changelog.main.kts
+      run: chmod +x /./github/scripts/update-changelog.main.kts
     - name: Test job
-      run: kotlinc -script update-changelog.main.kts
+      run: kotlinc -script /./.github/scripts/update-changelog.main.kts
 #  if_merged:
 #    if: ${{ github.event.label.name == 'module-1' }}
 #    #update module-1 CHANGELOG
