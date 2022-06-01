@@ -18,6 +18,8 @@ jobs:
   test-job:
     runs-on: ubuntu-latest
     steps:
+    - name: Make it executable
+      run: chmod +x /./.github/scripts/update-changelog.main.kts
     - name: Test job
       run: kotlinc -script /./.github/scripts/update-changelog.main.kts
 #  if_merged:
