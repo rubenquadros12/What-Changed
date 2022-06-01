@@ -21,5 +21,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Run script to update CHANGELOG"
-    - run: kotlin /./.github/scripts/dependency-report-mail.js
+    - run: kotlin /./.github/scripts/update-changelog.main.kts
     
