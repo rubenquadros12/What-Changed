@@ -7,7 +7,7 @@ on:
   # Triggers the workflow on pull request mergred for the master branch
   pull_request:
     types:
-      -closed
+      - closed
     branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -20,6 +20,6 @@ jobs:
     #update module-1 CHANGELOG
     runs-on: ubuntu-latest
     steps:
-    - name: "Run script to update CHANGELOG"
-    - run: kotlin /./.github/scripts/update-changelog.main.kts
+      - name: "Run script to update CHANGELOG"
+      - run: kotlin /./.github/scripts/update-changelog.main.kts
     
