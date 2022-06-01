@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Make it executable
-      run: chmod +x ./.scripts/update-changelog.main.kts
+      run: chmod +x /.scripts/update-changelog.main.kts
     - name: Test job
-      run: kotlinc -script ./.scripts/update-changelog.main.kts
+      run: kotlinc -script /.scripts/update-changelog.main.kts
 #  if_merged:
 #    if: ${{ github.event.label.name == 'module-1' }}
 #    #update module-1 CHANGELOG
