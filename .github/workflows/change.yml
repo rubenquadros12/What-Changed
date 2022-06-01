@@ -27,5 +27,7 @@ jobs:
 #    #update module-1 CHANGELOG
 #    runs-on: ubuntu-latest
 #    steps:
+#      - uses: actions/checkout@v2
+#
 #      - name: Run script to update CHANGELOG
-#        run: kotlin /./.github/scripts/update-changelog.main.kts
+#        run: kotlin update-changelog.main.kts
