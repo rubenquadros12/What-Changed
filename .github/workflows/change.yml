@@ -1,0 +1,25 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Changelo
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pull request mergred for the master branch
+  pull_request:
+    types:
+      -closed
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  if_merged:
+    if: ${{ github.event.label.name == 'module-1' }}
+    #update module-1 CHANGELOG
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Run script to update CHANGELOG"
+    - run: kotlin /./.github/scripts/dependency-report-mail.js
+    
