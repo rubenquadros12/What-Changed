@@ -20,9 +20,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Make it executable
-      run: chmod +x update-changelog.main.kts
-
     - name: Test job
       run: kotlinc -script update-changelog.main.kts
 #  if_merged:
