@@ -15,11 +15,14 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  if_merged:
-    if: ${{ github.event.label.name == 'module-1' }}
-    #update module-1 CHANGELOG
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run script to update CHANGELOG
-        run: kotlin /./.github/scripts/update-changelog.main.kts
-    
+  runs-on: ubuntu-latest
+  steps:
+    - name: Test job
+      run: kotlin /./.github/scripts/update-changelog.main.kts
+#  if_merged:
+#    if: ${{ github.event.label.name == 'module-1' }}
+#    #update module-1 CHANGELOG
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Run script to update CHANGELOG
+#        run: kotlin /./.github/scripts/update-changelog.main.kts
