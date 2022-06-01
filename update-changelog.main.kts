@@ -10,8 +10,8 @@ val prDetails = getPRDetails()
 val isRelease = isReleaseBuild()
 
 fun getPRDetails(): PRDetails {
-    val message = "github.event.head_commit.message".runCommandWithRedirect()
-    val prNumber = "github.event.number".runCommandWithRedirect()
+    val message = "github.event.head_commit.message".runCommand()
+    val prNumber = "github.event.number".runCommand()
 
     println("message: $message, prNumber: $prNumber")
 
@@ -40,15 +40,21 @@ fun writeChangeLog() {
 
 }
 
-fun String.runCommandWithRedirect(dir: File? = null) =
-    ProcessBuilder("/bin/sh", "-c", this)
-        .redirectErrorStream(true)
-        .inheritIO()
+
+fun String.runCommand(dir: File? = null): String {
+    val parts = this.split("\\s".toRegex())
+    val proc: Process = ProcessBuilder(*parts.toTypedArray())
         .directory(dir)
+        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+        .redirectError(ProcessBuilder.Redirect.PIPE)
         .start()
-        .waitFor()
+
+    proc.waitFor()
+
+    return proc.inputStream.bufferedReader().readText().trim()
+}
 
 data class PRDetails(
-    val message: Int,
-    val number: Int
+    val message: String,
+    val number: String
 )
