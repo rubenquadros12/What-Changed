@@ -27,7 +27,7 @@ jobs:
       run: |
         git config user.name 'rubenquadros12'
         git config user.email 'ruben@sharechat.co'
-        git add /module-one/CHANGELOG.md
+        git add module-one/CHANGELOG.md
         git commit -m "Update CHANGELOG.md"
         git push
 #  if_merged:
