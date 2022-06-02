@@ -76,7 +76,7 @@ fun convertUpcomingToRelease(file: File, newVersion: String) {
             if (isFirstLine) {
                 stringBuilder.append("### v$newVersion | ${today()}")
                 stringBuilder.append(System.lineSeparator())
-                stringBuilder.append("${prDetails.message} (${prDetails.sha})")
+                stringBuilder.append("* ${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})")
                 stringBuilder.append(System.lineSeparator())
                 isFirstLine = false
             } else {
@@ -102,7 +102,7 @@ fun makeNewRelease(file: File, newVersion: String) {
         fileAccess.seek(0)
         fileAccess.write("### v$newVersion | ${today()}".toByteArray())
         fileAccess.write("\n".toByteArray())
-        fileAccess.write("${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})".toByteArray())
+        fileAccess.write("* ${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})".toByteArray())
         fileAccess.write("\n".toByteArray())
         fileAccess.write(currentChangeLog.toByteArray())
 
@@ -118,7 +118,7 @@ fun makeNewFutureRelease(file: File) {
         fileAccess.seek(0)
         fileAccess.write("### Upcoming Release".toByteArray())
         fileAccess.write("\n".toByteArray())
-        fileAccess.write("${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})".toByteArray())
+        fileAccess.write("* ${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})".toByteArray())
         fileAccess.write("\n".toByteArray())
         fileAccess.write(currentChangeLog.toByteArray())
 
@@ -137,7 +137,7 @@ fun addToFutureRelease(file: File) {
             stringBuilder.append(line)
             stringBuilder.append(System.lineSeparator())
             if (isFirstLine) {
-                stringBuilder.append("${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})")
+                stringBuilder.append("* ${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})")
                 stringBuilder.append(System.lineSeparator())
                 isFirstLine = false
             }
