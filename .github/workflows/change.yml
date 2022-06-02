@@ -22,6 +22,14 @@ jobs:
 
     - name: Test job
       run: kotlin update-changelog.main.kts
+
+    - name: Commit changes
+      run: |
+        git config user.name 'rubenquadros12'
+        git config user.email 'ruben@sharechat.co'
+        git add /module-one/CHANGELOG.md
+        git commit -m "Update CHANGELOG.md"
+        git push
 #  if_merged:
 #    if: ${{ github.event.label.name == 'module-1' }}
 #    #update module-1 CHANGELOG

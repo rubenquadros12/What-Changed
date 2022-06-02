@@ -7,6 +7,7 @@ import java.io.*
 import java.util.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.jetbrains.kotlin.org.apache.commons.io.IOUtils
 
 //get commit details
 val prDetails = getPRDetails()
@@ -18,7 +19,7 @@ val versionInfo = getVersionDetails()
 writeChangeLog(versionDetails = versionInfo, prDetails = prDetails)
 
 fun getPRDetails(): PRDetails {
-    val message = "git log -1 --pretty=%B".runCommand()
+    val message = "git log -1 --pretty=%B --first-parent".runCommand()
     val commitSha = "git log --pretty=format:%h -1".runCommand()
 
     println("message: $message, sha: $commitSha")
@@ -40,41 +41,121 @@ fun writeChangeLog(versionDetails: VersionDetails, prDetails: PRDetails) {
 
     fun hasUnreleasedChanges(firstLine: String?): Boolean = firstLine?.contains("Upcoming") == true
 
-    fun today(): String {
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("dd-MM-YYYY")
-        return current.format(formatter)
-    }
-
     val file = File("module-one/CHANGELOG.md")
     val firstLine = file.useLines { it.firstOrNull() }
 
     if (versionDetails.isRelease) {
         //check if un-released changes are present
         if (hasUnreleasedChanges(firstLine)) {
-            //make it release
-
+            //bump to release
+            convertUpcomingToRelease(file, versionDetails.version)
         } else {
             //make new release
-            val fileAccess = RandomAccessFile(file, "rw")
-            fileAccess.seek(0)
-            fileAccess.write("### v${versionDetails.version} | ${today()}".toByteArray())
-            fileAccess.write("\n".toByteArray())
-            fileAccess.write("${prDetails.message} (${prDetails.sha})".toByteArray())
-
-            fileAccess.close()
+            makeNewRelease(file, versionDetails.version)
         }
-
-        //add current commit details
     } else {
         //check if un-released changes are present
         if (hasUnreleasedChanges(firstLine)) {
-            //add to second line
-
+            //add to upcoming release
+            addToFutureRelease(file)
         } else {
-
+            //make new future release
+            makeNewFutureRelease(file)
         }
     }
+}
+
+fun convertUpcomingToRelease(file: File, newVersion: String) {
+    var isFirstLine = true
+    val bufferedReader = BufferedReader(FileReader("module-one/CHANGELOG.md"))
+    bufferedReader.use { reader ->
+        val stringBuilder = StringBuilder()
+        var line = reader.readLine()
+
+        while (line != null) {
+            if (isFirstLine) {
+                stringBuilder.append("### v$newVersion | ${today()}")
+                stringBuilder.append(System.lineSeparator())
+                stringBuilder.append("${prDetails.message} (${prDetails.sha})")
+                stringBuilder.append(System.lineSeparator())
+                isFirstLine = false
+            } else {
+                stringBuilder.append(line)
+                stringBuilder.append(System.lineSeparator())
+            }
+            line = reader.readLine()
+        }
+        val newChangeLog = stringBuilder.toString()
+        val fileAccess = RandomAccessFile(file, "rw")
+        fileAccess.seek(0)
+        fileAccess.write(newChangeLog.toByteArray())
+
+        fileAccess.close()
+    }
+}
+
+fun makeNewRelease(file: File, newVersion: String) {
+    val fileInputStream = FileInputStream(file)
+    fileInputStream.use { inputStream ->
+        val currentChangeLog = IOUtils.toString(inputStream, "utf-8")
+        val fileAccess = RandomAccessFile(file, "rw")
+        fileAccess.seek(0)
+        fileAccess.write("### v$newVersion | ${today()}".toByteArray())
+        fileAccess.write("\n".toByteArray())
+        fileAccess.write("${prDetails.message} (${prDetails.sha})".toByteArray())
+        fileAccess.write("\n".toByteArray())
+        fileAccess.write(currentChangeLog.toByteArray())
+
+        fileAccess.close()
+    }
+}
+
+fun makeNewFutureRelease(file: File) {
+    val fileInputStream = FileInputStream(file)
+    fileInputStream.use { inputStream ->
+        val currentChangeLog = IOUtils.toString(inputStream, "utf-8")
+        val fileAccess = RandomAccessFile(file, "rw")
+        fileAccess.seek(0)
+        fileAccess.write("### Upcoming Release".toByteArray())
+        fileAccess.write("\n".toByteArray())
+        fileAccess.write("${prDetails.message} (${prDetails.sha})".toByteArray())
+        fileAccess.write("\n".toByteArray())
+        fileAccess.write(currentChangeLog.toByteArray())
+
+        fileAccess.close()
+    }
+}
+
+fun addToFutureRelease(file: File) {
+    var isFirstLine = true
+    val bufferedReader = BufferedReader(FileReader("module-one/CHANGELOG.md"))
+    bufferedReader.use { reader ->
+        val stringBuilder = StringBuilder()
+        var line = reader.readLine()
+
+        while (line != null) {
+            stringBuilder.append(line)
+            stringBuilder.append(System.lineSeparator())
+            if (isFirstLine) {
+                stringBuilder.append("${prDetails.message} (${prDetails.sha})")
+                stringBuilder.append(System.lineSeparator())
+                isFirstLine = false
+            }
+            line = reader.readLine()
+        }
+        val newChangeLog = stringBuilder.toString()
+        val fileAccess = RandomAccessFile(file, "rw")
+        fileAccess.seek(0)
+        fileAccess.write(newChangeLog.toByteArray())
+
+        fileAccess.close()
+    }
+}
+
+fun today(): String {
+    val current = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-YYYY")
+    return current.format(formatter)
 }
 
 
