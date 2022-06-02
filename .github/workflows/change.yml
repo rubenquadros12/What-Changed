@@ -7,7 +7,7 @@ on:
   # Triggers the workflow on pull request mergred for the master branch
   pull_request:
     types:
-      - closed
+      [closed,labeled]
     branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   if_merged:
-    if: ${{ github.event.pull_request.merged == true }}
+    if: ${{ github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'module-1') }}
     #update module-1 CHANGELOG
     runs-on: ubuntu-latest
     steps:
