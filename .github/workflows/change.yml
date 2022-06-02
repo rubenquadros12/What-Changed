@@ -15,27 +15,20 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  test-job:
+  if_merged:
+    if: ${{ github.event.label.name == 'module-1' }}
+    #update module-1 CHANGELOG
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Test job
-      run: kotlin update-changelog.main.kts
+      - name: Run script to update CHANGELOG
+        run: kotlin update-changelog.main.kts
 
-    - name: Commit changes
-      run: |
-        git config user.name 'rubenquadros12'
-        git config user.email 'ruben@sharechat.co'
-        git add module-one/CHANGELOG.md
-        git commit -m "Update CHANGELOG.md"
-        git push
-#  if_merged:
-#    if: ${{ github.event.label.name == 'module-1' }}
-#    #update module-1 CHANGELOG
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Run script to update CHANGELOG
-#        run: kotlin update-changelog.main.kts
+      - name: Commit CHANGELOG
+        run: |
+          git config user.name 'rubenquadros12'
+          git config user.email 'ruben@sharechat.co'
+          git add module-one/CHANGELOG.md
+          git commit -m "Update CHANGELOG.md"
+          git push
