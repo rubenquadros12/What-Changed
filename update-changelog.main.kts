@@ -47,11 +47,11 @@ fun writeChangeLog() {
     if (versionInfo.isRelease) {
         //check if un-released changes are present
         if (hasUnreleasedChanges(firstLine)) {
-            //bump to release
-            convertUpcomingToRelease(file, versionInfo.version)
+            //bump pre-release to release
+            convertUpcomingToRelease(file)
         } else {
             //make new release
-            makeNewRelease(file, versionInfo.version)
+            makeNewRelease(file)
         }
     } else {
         //check if un-released changes are present
@@ -65,7 +65,7 @@ fun writeChangeLog() {
     }
 }
 
-fun convertUpcomingToRelease(file: File, newVersion: String) {
+fun convertUpcomingToRelease(file: File) {
     var isFirstLine = true
     val bufferedReader = BufferedReader(FileReader("module-one/CHANGELOG.md"))
     bufferedReader.use { reader ->
@@ -74,7 +74,7 @@ fun convertUpcomingToRelease(file: File, newVersion: String) {
 
         while (line != null) {
             if (isFirstLine) {
-                stringBuilder.append("### v$newVersion | ${today()}")
+                stringBuilder.append("### v${versionInfo.version} | ${today()}")
                 stringBuilder.append(System.lineSeparator())
                 stringBuilder.append("* ${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})")
                 stringBuilder.append(System.lineSeparator())
@@ -94,13 +94,13 @@ fun convertUpcomingToRelease(file: File, newVersion: String) {
     }
 }
 
-fun makeNewRelease(file: File, newVersion: String) {
+fun makeNewRelease(file: File) {
     val fileInputStream = FileInputStream(file)
     fileInputStream.use { inputStream ->
         val currentChangeLog = IOUtils.toString(inputStream, "utf-8")
         val fileAccess = RandomAccessFile(file, "rw")
         fileAccess.seek(0)
-        fileAccess.write("### v$newVersion | ${today()}".toByteArray())
+        fileAccess.write("### v${versionInfo.version} | ${today()}".toByteArray())
         fileAccess.write("\n".toByteArray())
         fileAccess.write("* ${prDetails.message} [(${prDetails.sha})](https://github.com/rubenquadros12/What-Changed/commit/${prDetails.sha})".toByteArray())
         fileAccess.write("\n".toByteArray())
