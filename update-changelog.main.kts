@@ -16,7 +16,7 @@ val prDetails = getPRDetails()
 val versionInfo = getVersionDetails()
 
 //write to CHANGELOG.md
-writeChangeLog(versionDetails = versionInfo, prDetails = prDetails)
+writeChangeLog()
 
 fun getPRDetails(): PRDetails {
     val message = "git log -1 --pretty=%B --first-parent".runCommand()
@@ -37,21 +37,21 @@ fun getVersionDetails(): VersionDetails {
     return VersionDetails(version = version, isRelease = isRelease)
 }
 
-fun writeChangeLog(versionDetails: VersionDetails, prDetails: PRDetails) {
+fun writeChangeLog() {
 
     fun hasUnreleasedChanges(firstLine: String?): Boolean = firstLine?.contains("Upcoming") == true
 
     val file = File("module-one/CHANGELOG.md")
     val firstLine = file.useLines { it.firstOrNull() }
 
-    if (versionDetails.isRelease) {
+    if (versionInfo.isRelease) {
         //check if un-released changes are present
         if (hasUnreleasedChanges(firstLine)) {
             //bump to release
-            convertUpcomingToRelease(file, versionDetails.version)
+            convertUpcomingToRelease(file, versionInfo.version)
         } else {
             //make new release
-            makeNewRelease(file, versionDetails.version)
+            makeNewRelease(file, versionInfo.version)
         }
     } else {
         //check if un-released changes are present
